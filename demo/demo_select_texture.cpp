@@ -47,7 +47,7 @@ int demo_select_texture(int argc, char* argv[])
     cv::namedWindow(data.wnd);
     cv::namedWindow(demo_wnd);
     // \todo choose reasonable max value
-    cv::createTrackbar("eps", demo_wnd, &eps, 200);
+    cv::createTrackbar("eps", demo_wnd, &eps, 3000);
 
     cv::setMouseCallback(data.wnd, mouse, &data);
 
@@ -55,7 +55,7 @@ int demo_select_texture(int argc, char* argv[])
     while (cv::waitKey(30) != 27) // ESC
     {
         cap >> data.image;
-
+		cv::resize(data.image,data.image,cv::Size (480,320));
         cv::cvtColor(data.image, frame_gray, cv::COLOR_BGR2GRAY);
         const cv::Rect roi = {data.tl, data.br};
         if (roi.area())

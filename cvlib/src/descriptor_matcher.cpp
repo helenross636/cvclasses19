@@ -22,7 +22,8 @@ void descriptor_matcher::knnMatchImpl(cv::InputArray queryDescriptors, std::vect
     cv::RNG rnd;
     for (int i = 0; i < q_desc.rows; ++i)
     {
-        // \todo implement Ratio of SSD check.
+		//lab 
+        // \todo implement Ratio of SSD check. 
         matches[i].emplace_back(i, rnd.uniform(0, t_desc.rows), FLT_MAX);
     }
 }
@@ -30,6 +31,7 @@ void descriptor_matcher::knnMatchImpl(cv::InputArray queryDescriptors, std::vect
 void descriptor_matcher::radiusMatchImpl(cv::InputArray queryDescriptors, std::vector<std::vector<cv::DMatch>>& matches, float /*maxDistance*/,
                                          cv::InputArrayOfArrays masks /*unhandled*/, bool compactResult /*unhandled*/)
 {
+	//lab 
     // \todo implement matching with "maxDistance"
     knnMatchImpl(queryDescriptors, matches, 1, masks, compactResult);
 }

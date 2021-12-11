@@ -6,6 +6,7 @@
 
 #include <cvlib.hpp>
 #include <opencv2/opencv.hpp>
+#include <sstream>
 
 #include "utils.hpp"
 
@@ -22,10 +23,12 @@ int demo_corner_detector(int argc, char* argv[])
     cv::namedWindow(demo_wnd);
 
     cv::Mat frame;
-    auto detector = cv::GFTTDetector::create(); // \todo use cvlib::corner_detector_fast
+    //auto detector = cv::GFTTDetector::create(); // \todo use cvlib::corner_detector_fast
+	auto detector = cvlib::corner_detector_fast::create();
     std::vector<cv::KeyPoint> corners;
 
     utils::fps_counter fps;
+	std::ostringstream convert;
     while (cv::waitKey(30) != 27) // ESC
     {
         cap >> frame;
@@ -35,6 +38,9 @@ int demo_corner_detector(int argc, char* argv[])
         cv::drawKeypoints(frame, corners, frame, cv::Scalar(0, 0, 255));
         utils::put_fps_text(frame, fps);
         // \todo add count of the detected corners at the top left corner of the image. Use green text color.
+		convert.str("");
+		convert << corners.size() << " - amount of corners";
+		cv::putText(frame, convert.str().c_str(), cv::Point( 10, 25 ), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 150, 0));
         cv::imshow(demo_wnd, frame);
     }
 

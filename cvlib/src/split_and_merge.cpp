@@ -22,13 +22,45 @@ void split_image(cv::Mat image, double stddev)
 
     const auto width = image.cols;
     const auto height = image.rows;
-
-    split_image(image(cv::Range(0, height / 2), cv::Range(0, width / 2)), stddev);
-    split_image(image(cv::Range(0, height / 2), cv::Range(width / 2, width)), stddev);
-    split_image(image(cv::Range(height / 2, height), cv::Range(width / 2, width)), stddev);
-    split_image(image(cv::Range(height / 2, height), cv::Range(0, width / 2)), stddev);
+	
+	if ((height != 1) && (width != 1))
+    {
+		split_image(image(cv::Range(0, height / 2), cv::Range(0, width / 2)), stddev);
+		split_image(image(cv::Range(0, height / 2), cv::Range(width / 2, width)), stddev);
+		split_image(image(cv::Range(height / 2, height), cv::Range(width / 2, width)), stddev);
+		split_image(image(cv::Range(height / 2, height), cv::Range(0, width / 2)), stddev);
+	}
 }
 } // namespace
+
+void merge_image(cv::Mat image, double stddev)
+{
+	uint8_t meanres;
+	for (int i = 0; i < image.rows-1; i++)
+	{//ходим по строкам
+		for (int j = 0; j < image.cols-1; j++)
+		{//ходим по столбцам
+			if (abs(image.at<uint8_t>(i, j) - image.at<uint8_t>(i + 1, j + 1)) <= stddev)
+			{//сравнение по диагонали
+				meanres = (image.at<uint8_t>(i, j) + image.at<uint8_t>(i + 1, j + 1)) / 2;
+				image.at<uint8_t>(i, j) = meanres;
+				image.at<uint8_t>(i + 1, j + 1) = meanres;
+			}
+			if (abs(image.at<uint8_t>(i, j) - image.at<uint8_t>(i + 1, j)) <= stddev)
+			{//сравнение по горизонтали
+				meanres = (image.at<uint8_t>(i, j) + image.at<uint8_t>(i + 1, j)) / 2;
+				image.at<uint8_t>(i, j) = meanres;
+				image.at<uint8_t>(i + 1, j) = meanres;
+			}
+			if (abs(image.at<uint8_t>(i, j) - image.at<uint8_t>(i, j + 1)) <= stddev)
+			{//сравнение по вертикали 
+				meanres = (image.at<uint8_t>(i, j) + image.at<uint8_t>(i, j + 1)) / 2;
+				image.at<uint8_t>(i, j) = meanres;
+				image.at<uint8_t>(i, j + 1) = meanres;
+			}
+		}
+	}
+}
 
 namespace cvlib
 {
@@ -39,7 +71,7 @@ cv::Mat split_and_merge(const cv::Mat& image, double stddev)
     split_image(res, stddev);
 
     // merge part
-    // \todo implement merge algorithm
+    merge_image(res, stddev);
     return res;
 }
 } // namespace cvlib

@@ -13,7 +13,7 @@ int demo_motion_segmentation(int argc, char* argv[])
     if (!cap.isOpened())
         return -1;
 
-    auto mseg = cv::createBackgroundSubtractorMOG2(); // \todo use cvlib::motion_segmentation
+    auto mseg = cvlib::motion_segmentation();
     const auto main_wnd = "orig";
     const auto demo_wnd = "demo";
 
@@ -27,10 +27,12 @@ int demo_motion_segmentation(int argc, char* argv[])
     while (cv::waitKey(30) != 27) // ESC
     {
         cap >> frame;
+		//cv::GaussianBlur(frame, frame, cv::Size(5,5), 0, 0);
         cv::imshow(main_wnd, frame);
 
-        mseg->setVarThreshold(threshold); // \todo use TackbarCallback
-        mseg->apply(frame, frame_mseg);
+        cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
+        mseg.setVarThreshold(threshold); // \todo use TackbarCallback
+        mseg.apply(frame, frame_mseg);
         if (!frame_mseg.empty())
             cv::imshow(demo_wnd, frame_mseg);
     }
