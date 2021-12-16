@@ -105,6 +105,7 @@ void corner_detector_fast::compute(cv::InputArray image, std::vector<cv::KeyPoin
             n_keypoints.push_back(point);
     }
     std::cout << "deleted keypoints: " << keypoints.size() - n_keypoints.size() << std::endl;
+	std::cout <<"TESTTEST" << std::endl;
     descriptors.create(static_cast<int>(n_keypoints.size()), desc_length, CV_32S);
 
     GaussianBlur(gray, gray, cv::Size(5, 5), 0, 0);
