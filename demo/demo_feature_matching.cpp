@@ -51,15 +51,18 @@ int demo_feature_matching(int argc, char* argv[])
     while (pressed_key != 27) // ESC
     {
         cap >> test.img;
+		std::cout << "test1" << std::endl;
 
         detector->thresh = cornet_thresh;
         detector->detect(test.img, test.corners);
         cv::drawKeypoints(test.img, test.corners, main_frame);
         cv::imshow(main_wnd, main_frame);
+		std::cout << "test2" << std::endl;
 
         pressed_key = cv::waitKey(30);
         if (pressed_key == ' ') // space
         {
+			std::cout << "SPACE" << std::endl;
             ref.img = test.img.clone();
             detector->detectAndCompute(ref.img, cv::Mat(), ref.corners, ref.descriptors);
         }

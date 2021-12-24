@@ -42,13 +42,14 @@ class motion_segmentation : public cv::BackgroundSubtractor
 
     void updateBackground(cv::Mat image);
     private:
-    bool meanlogic = true;
     cv::Mat m_value,d_value;
-    int max_size = 30;
+    bool meanlogic = false;
+    int max_size = 15;
     std::vector<cv::Mat> memmory;
     double thresh;
     double p = 0.05;
-    double k = 2.5;};
+    double k = 2.5;
+};
 
 /// \brief FAST corner detection algorithm
 class corner_detector_fast : public cv::Feature2D
@@ -56,7 +57,7 @@ class corner_detector_fast : public cv::Feature2D
     public:
     /// \brief Fabrique method for creating FAST detector
     static cv::Ptr<corner_detector_fast> create();
-	int thresh = 10;
+    int thresh = 10;
     /// \see Feature2d::detect
     virtual void detect(cv::InputArray image, CV_OUT std::vector<cv::KeyPoint>& keypoints, cv::InputArray mask = cv::noArray()) override;
 
@@ -120,9 +121,15 @@ class descriptor_matcher : public cv::DescriptorMatcher
 };
 
 /// \brief Stitcher for merging images into big one
-class Stitcher
+class stitcher
 {
-    /// \todo design and implement
+    public:
+    static cv::Ptr<stitcher> create()
+    {
+        return cv::makePtr<stitcher>();
+    }
+
+    cv::Mat stiched(cv::Mat img1, cv::Mat img2);
 };
 } // namespace cvlib
 
