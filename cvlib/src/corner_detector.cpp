@@ -30,11 +30,10 @@ cv::Ptr<corner_detector_fast> corner_detector_fast::create()
     return cv::makePtr<corner_detector_fast>();
 }
 
-bool check_fragment(cv::Mat& fragment)
+bool check_fragment(cv::Mat &fragment, int threshold = 40)
 {
     int M = 3;
     int N = 12;
-    int threshold = 50;
     unsigned char I1 = std::min((int)fragment.at<unsigned char>(fragment.rows / 2, fragment.cols / 2) + threshold, 255);
     unsigned char I2 = std::max((int)fragment.at<unsigned char>(fragment.rows / 2, fragment.cols / 2) - threshold, 0);
     int i_ind[16] = {3, 6, 3, 0, 4, 5, 6, 6, 5, 4, 2, 1, 0, 0, 1, 2}; //начинаем со "среднего" пикселя
@@ -81,7 +80,7 @@ void corner_detector_fast::detect(cv::InputArray image, CV_OUT std::vector<cv::K
         for (int j = border; j < curr_frame.cols - border; j++)
         {
             cv::Mat& fragment = curr_frame(cv::Range(i - border, i + border + 1), cv::Range(j - border, j + border + 1));
-            if (check_fragment(fragment))
+            if (check_fragment(fragment, this->thresh))
                 keypoints.push_back(cv::KeyPoint(j, i, 2 * border + 1, 0, 0, 0, 3));
         }
     // \todo implement FAST with minimal LOCs(lines of code), but keep code readable.

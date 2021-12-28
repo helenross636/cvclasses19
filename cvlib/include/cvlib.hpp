@@ -57,7 +57,7 @@ class corner_detector_fast : public cv::Feature2D
     public:
     /// \brief Fabrique method for creating FAST detector
     static cv::Ptr<corner_detector_fast> create();
-    int thresh = 10;
+    int thresh = 50;
     /// \see Feature2d::detect
     virtual void detect(cv::InputArray image, CV_OUT std::vector<cv::KeyPoint>& keypoints, cv::InputArray mask = cv::noArray()) override;
 
@@ -121,15 +121,16 @@ class descriptor_matcher : public cv::DescriptorMatcher
 };
 
 /// \brief Stitcher for merging images into big one
-class stitcher
+class Stitcher
 {
-    public:
-    static cv::Ptr<stitcher> create()
+    /// \todo design and implement
+	public:
+	static cv::Ptr<Stitcher> create()
     {
-        return cv::makePtr<stitcher>();
+		return cv::makePtr<Stitcher>();
     }
 
-    cv::Mat stiched(cv::Mat img1, cv::Mat img2);
+	cv::Mat Stiched(cv::Mat img1, cv::Mat img2);
 };
 } // namespace cvlib
 

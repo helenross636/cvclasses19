@@ -32,8 +32,8 @@ int demo_feature_matching(int argc, char* argv[])
         std::vector<cv::KeyPoint> corners;
         cv::Mat descriptors;
     };
-
-    img_features ref;
+	cv::Mat temp_img;
+    img_features ref;	//space
     img_features test;
     std::vector<std::vector<cv::DMatch>> pairs;
 
@@ -42,12 +42,12 @@ int demo_feature_matching(int argc, char* argv[])
     utils::fps_counter fps;
     int pressed_key = 0;
 
-    int ratio = 15;
-    int max_distance = 256;
-    int cornet_thresh = 5;
+    int ratio = 4;
+    int max_distance = 45;
+    int cornet_thresh = 200;
     cv::createTrackbar("ratio", demo_wnd, &ratio, 15);
     cv::createTrackbar("max distance", demo_wnd, &max_distance, 150);
-    cv::createTrackbar("thresh for cornet distance", demo_wnd, &cornet_thresh, 200);
+    cv::createTrackbar("thresh for cornet distance", demo_wnd, &cornet_thresh, 300);
     while (pressed_key != 27) // ESC
     {
         cap >> test.img;
@@ -73,9 +73,11 @@ int demo_feature_matching(int argc, char* argv[])
         }
 
         matcher.set_ratio(ratio/10.0f);
-        detector->compute(test.img, test.corners, test.descriptors);
+		test.img.copyTo(temp_img);
+		cv::GaussianBlur(temp_img, temp_img, cv::Size(5, 5), 0, 0);
+        detector->detectAndCompute(test.img, cv::Mat(), test.corners, test.descriptors);
         //\todo add trackbar to demo_wnd to tune threshold value
-        matcher.radiusMatch(test.descriptors, ref.descriptors, pairs, max_distance/1.0f);
+        matcher.radiusMatch(test.descriptors, ref.descriptors, pairs, max_distance);
         cv::drawMatches(test.img, test.corners, ref.img, ref.corners, pairs, demo_frame);
 
         utils::put_fps_text(demo_frame, fps);

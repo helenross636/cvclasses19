@@ -13,9 +13,6 @@ bool mysort (cv::DMatch i,cv::DMatch j) { return (i.distance<j.distance); }
 void descriptor_matcher::knnMatchImpl(cv::InputArray queryDescriptors, std::vector<std::vector<cv::DMatch>>& matches, int k /*unhandled*/,
                                       cv::InputArrayOfArrays masks /*unhandled*/, bool compactResult /*unhandled*/)
 {
-    if (trainDescCollection.empty())
-        return;	//просто предосторожность
-
     for(int i=0; i<matches.size();++i)
     {
         bool repeat = true;
@@ -62,7 +59,7 @@ void descriptor_matcher::radiusMatchImpl(cv::InputArray queryDescriptors, std::v
             for(int ind =0; ind <t_desc.cols; ++ind)
                 distance += (q_desc.at<double>(i,ind) - t_desc.at<double>(j,ind) ) * (q_desc.at<double>(i,ind) - t_desc.at<double>(j,ind));
 
-            if (distance < maxDistance)
+            if (distance < maxDistance*maxDistance)
                 matches[i].emplace_back(i, j, distance);
         }
     }
